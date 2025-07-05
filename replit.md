@@ -100,4 +100,7 @@ Preferred communication style: Simple, everyday language.
 ## Changelog
 
 Changelog:
-- July 05, 2025. Initial setup
+- July 05, 2025. Initial setup complete with IP tracker application
+- July 05, 2025. Updated branding to "Your IP" with magnifying glass on globe icon
+- July 05, 2025. Added Google Ads placeholder spaces on left and right sides (160x600 format)
+- July 05, 2025. Added dark mode support for better accessibility
