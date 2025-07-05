@@ -18,7 +18,14 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-  Search
+  Search,
+  Menu,
+  ChevronDown,
+  Home,
+  BarChart3,
+  Settings,
+  HelpCircle,
+  User
 } from "lucide-react";
 import { type IPInfo } from "@shared/schema";
 import { useState } from "react";
@@ -27,6 +34,7 @@ import RecentLookups from "@/components/recent-lookups";
 export default function IPTracker() {
   const { toast } = useToast();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { data: ipInfo, isLoading, error, refetch } = useQuery<IPInfo>({
     queryKey: ['/api/ip-info'],
@@ -82,52 +90,126 @@ export default function IPTracker() {
     }
   };
 
+  const AdPlaceholder = ({ side }: { side: 'left' | 'right' }) => (
+    <div className="hidden xl:block w-40 p-4">
+      <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-dashed border-blue-200 dark:border-blue-700 rounded-lg h-[600px] flex flex-col items-center justify-center sticky top-4 shadow-sm">
+        <div className="text-center p-4">
+          <div className="w-16 h-16 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center mb-4 mx-auto">
+            <BarChart3 className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+          </div>
+          <h3 className="font-semibold text-sm text-gray-800 dark:text-gray-200 mb-2">Advertisement</h3>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Your ad could be here</p>
+          <div className="text-xs text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded px-2 py-1 border">
+            160×600
+          </div>
+          <div className="mt-4 space-y-2">
+            <div className="h-2 bg-blue-200 dark:bg-blue-700 rounded animate-pulse"></div>
+            <div className="h-2 bg-purple-200 dark:bg-purple-700 rounded animate-pulse"></div>
+            <div className="h-2 bg-blue-200 dark:bg-blue-700 rounded animate-pulse"></div>
+          </div>
+          <Button variant="outline" size="sm" className="mt-4 text-xs">
+            Learn More
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        {/* Top Navigation Bar - Alinta Style */}
+        <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
+            <div className="flex justify-between items-center h-16">
+              {/* Logo and Brand */}
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center relative">
-                  <Globe className="h-4 w-4 text-white" />
-                  <Search className="h-2 w-2 text-white absolute -top-1 -right-1" />
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center relative shadow-lg">
+                  <Globe className="h-5 w-5 text-white" />
+                  <Search className="h-3 w-3 text-white absolute -top-1 -right-1 bg-orange-500 rounded-full p-0.5" />
                 </div>
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Your IP</h1>
+                <div>
+                  <h1 className="text-xl font-bold text-gray-900 dark:text-white">Your IP</h1>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">IP Address Tracker</p>
+                </div>
+              </div>
+
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center space-x-8">
+                <a href="#" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <Home className="h-4 w-4" />
+                  <span>Home</span>
+                </a>
+                <a href="#" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <BarChart3 className="h-4 w-4" />
+                  <span>Analytics</span>
+                </a>
+                <a href="#" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <History className="h-4 w-4" />
+                  <span>History</span>
+                </a>
+                <a href="#" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <HelpCircle className="h-4 w-4" />
+                  <span>Help</span>
+                </a>
+              </div>
+
+              {/* User Account & Mobile Menu */}
+              <div className="flex items-center space-x-4">
+                <Button variant="outline" size="sm" className="hidden md:flex items-center space-x-2">
+                  <User className="h-4 w-4" />
+                  <span>My Account</span>
+                </Button>
+                
+                <button 
+                  className="md:hidden p-2 rounded-md text-gray-700 dark:text-gray-300"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                >
+                  <Menu className="h-5 w-5" />
+                </button>
               </div>
             </div>
+
+            {/* Mobile Menu */}
+            {mobileMenuOpen && (
+              <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4">
+                <div className="space-y-2">
+                  <a href="#" className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <Home className="h-4 w-4" />
+                    <span>Home</span>
+                  </a>
+                  <a href="#" className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <BarChart3 className="h-4 w-4" />
+                    <span>Analytics</span>
+                  </a>
+                  <a href="#" className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <History className="h-4 w-4" />
+                    <span>History</span>
+                  </a>
+                  <a href="#" className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <HelpCircle className="h-4 w-4" />
+                    <span>Help</span>
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
-        </header>
+        </nav>
+
         <main className="flex">
-          {/* Left Ad Space */}
-          <div className="hidden xl:block w-32 p-4">
-            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg h-96 flex items-center justify-center">
-              <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-                <p>Ad Space</p>
-                <p className="text-xs">160x600</p>
-              </div>
-            </div>
-          </div>
+          <AdPlaceholder side="left" />
 
           {/* Main Content */}
-          <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex items-center justify-center min-h-[400px]">
               <div className="text-center">
-                <RefreshCw className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
+                <RefreshCw className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
                 <p className="text-gray-600 dark:text-gray-300">Detecting your IP address and location...</p>
               </div>
             </div>
           </div>
 
-          {/* Right Ad Space */}
-          <div className="hidden xl:block w-32 p-4">
-            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg h-96 flex items-center justify-center">
-              <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-                <p>Ad Space</p>
-                <p className="text-xs">160x600</p>
-              </div>
-            </div>
-          </div>
+          <AdPlaceholder side="right" />
         </main>
       </div>
     );
@@ -136,32 +218,89 @@ export default function IPTracker() {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        {/* Top Navigation Bar - Alinta Style */}
+        <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
+            <div className="flex justify-between items-center h-16">
+              {/* Logo and Brand */}
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center relative">
-                  <Globe className="h-4 w-4 text-white" />
-                  <Search className="h-2 w-2 text-white absolute -top-1 -right-1" />
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center relative shadow-lg">
+                  <Globe className="h-5 w-5 text-white" />
+                  <Search className="h-3 w-3 text-white absolute -top-1 -right-1 bg-orange-500 rounded-full p-0.5" />
                 </div>
-                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Your IP</h1>
+                <div>
+                  <h1 className="text-xl font-bold text-gray-900 dark:text-white">Your IP</h1>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">IP Address Tracker</p>
+                </div>
+              </div>
+
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center space-x-8">
+                <a href="#" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <Home className="h-4 w-4" />
+                  <span>Home</span>
+                </a>
+                <a href="#" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <BarChart3 className="h-4 w-4" />
+                  <span>Analytics</span>
+                </a>
+                <a href="#" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <History className="h-4 w-4" />
+                  <span>History</span>
+                </a>
+                <a href="#" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <HelpCircle className="h-4 w-4" />
+                  <span>Help</span>
+                </a>
+              </div>
+
+              {/* User Account & Mobile Menu */}
+              <div className="flex items-center space-x-4">
+                <Button variant="outline" size="sm" className="hidden md:flex items-center space-x-2">
+                  <User className="h-4 w-4" />
+                  <span>My Account</span>
+                </Button>
+                
+                <button 
+                  className="md:hidden p-2 rounded-md text-gray-700 dark:text-gray-300"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                >
+                  <Menu className="h-5 w-5" />
+                </button>
               </div>
             </div>
+
+            {/* Mobile Menu */}
+            {mobileMenuOpen && (
+              <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4">
+                <div className="space-y-2">
+                  <a href="#" className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <Home className="h-4 w-4" />
+                    <span>Home</span>
+                  </a>
+                  <a href="#" className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <BarChart3 className="h-4 w-4" />
+                    <span>Analytics</span>
+                  </a>
+                  <a href="#" className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <History className="h-4 w-4" />
+                    <span>History</span>
+                  </a>
+                  <a href="#" className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                    <HelpCircle className="h-4 w-4" />
+                    <span>Help</span>
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
-        </header>
+        </nav>
+
         <main className="flex">
-          {/* Left Ad Space */}
-          <div className="hidden xl:block w-32 p-4">
-            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg h-96 flex items-center justify-center">
-              <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-                <p>Ad Space</p>
-                <p className="text-xs">160x600</p>
-              </div>
-            </div>
-          </div>
+          <AdPlaceholder side="left" />
 
           {/* Main Content */}
-          <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex items-center justify-center min-h-[400px]">
               <Card className="w-full max-w-md">
                 <CardContent className="pt-6">
@@ -181,15 +320,7 @@ export default function IPTracker() {
             </div>
           </div>
 
-          {/* Right Ad Space */}
-          <div className="hidden xl:block w-32 p-4">
-            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg h-96 flex items-center justify-center">
-              <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-                <p>Ad Space</p>
-                <p className="text-xs">160x600</p>
-              </div>
-            </div>
-          </div>
+          <AdPlaceholder side="right" />
         </main>
       </div>
     );
@@ -197,34 +328,109 @@ export default function IPTracker() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+      {/* Top Navigation Bar - Alinta Style */}
+      <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo and Brand */}
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center relative">
-                <Globe className="h-4 w-4 text-white" />
-                <Search className="h-2 w-2 text-white absolute -top-1 -right-1" />
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center relative shadow-lg">
+                <Globe className="h-5 w-5 text-white" />
+                <Search className="h-3 w-3 text-white absolute -top-1 -right-1 bg-orange-500 rounded-full p-0.5" />
               </div>
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Your IP</h1>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">Your IP</h1>
+                <p className="text-xs text-gray-500 dark:text-gray-400">IP Address Tracker</p>
+              </div>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              <a href="#" className="flex items-center space-x-1 text-blue-600 dark:text-blue-400 font-medium">
+                <Home className="h-4 w-4" />
+                <span>Home</span>
+              </a>
+              <a href="#analytics" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <BarChart3 className="h-4 w-4" />
+                <span>Analytics</span>
+              </a>
+              <a href="#history" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <History className="h-4 w-4" />
+                <span>History</span>
+              </a>
+              <a href="#help" className="flex items-center space-x-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <HelpCircle className="h-4 w-4" />
+                <span>Help</span>
+              </a>
+            </div>
+
+            {/* User Account & Mobile Menu */}
+            <div className="flex items-center space-x-4">
+              <Button variant="outline" size="sm" className="hidden md:flex items-center space-x-2 hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-blue-900/20">
+                <User className="h-4 w-4" />
+                <span>My Account</span>
+              </Button>
+              
+              <button 
+                className="md:hidden p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          {mobileMenuOpen && (
+            <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4">
+              <div className="space-y-2">
+                <a href="#" className="flex items-center space-x-2 px-4 py-2 text-blue-600 dark:text-blue-400 font-medium bg-blue-50 dark:bg-blue-900/20 rounded-md">
+                  <Home className="h-4 w-4" />
+                  <span>Home</span>
+                </a>
+                <a href="#analytics" className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                  <BarChart3 className="h-4 w-4" />
+                  <span>Analytics</span>
+                </a>
+                <a href="#history" className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                  <History className="h-4 w-4" />
+                  <span>History</span>
+                </a>
+                <a href="#help" className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+                  <HelpCircle className="h-4 w-4" />
+                  <span>Help</span>
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      {/* Hero Section - Alinta Style */}
+      <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Discover Your IP Information
+          </h1>
+          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Get comprehensive details about your IP address, location, and network connection with our advanced tracking technology.
+          </p>
+          <div className="flex items-center justify-center space-x-4">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3">
+              <div className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="font-medium">Live Detection Active</span>
+              </div>
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
       <main className="flex">
-        {/* Left Ad Space */}
-        <div className="hidden xl:block w-32 p-4">
-          <div className="bg-gray-100 dark:bg-gray-700 rounded-lg h-96 flex items-center justify-center sticky top-4">
-            <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-              <p>Ad Space</p>
-              <p className="text-xs">160x600</p>
-            </div>
-          </div>
-        </div>
+        <AdPlaceholder side="left" />
 
         {/* Main Content */}
-        <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Status Banner */}
           <div className="mb-8">
             <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 flex items-center space-x-3">
@@ -237,15 +443,15 @@ export default function IPTracker() {
           {/* IP Address Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* IPv4 Card */}
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center">
-                      <Globe className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                      <Globe className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">IPv4 Address</h3>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">IPv4 Address</h3>
                       <p className="text-sm text-gray-500 dark:text-gray-400">Internet Protocol version 4</p>
                     </div>
                   </div>
@@ -253,12 +459,13 @@ export default function IPTracker() {
                     variant="outline" 
                     size="sm"
                     onClick={() => handleCopy(ipInfo?.ip || '', 'IPv4 address')}
+                    className="hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-blue-900/20"
                   >
                     <Copy className="h-4 w-4 mr-2" />
                     Copy
                   </Button>
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-4 border border-blue-100 dark:border-blue-800">
                   <div className="font-mono text-2xl font-bold text-gray-900 dark:text-white">{ipInfo?.ip || 'Not available'}</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">Public IP Address</div>
                 </div>
@@ -266,15 +473,15 @@ export default function IPTracker() {
             </Card>
 
             {/* IPv6 Card */}
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/50 rounded-lg flex items-center justify-center">
-                      <Network className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                      <Network className="h-6 w-6 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">IPv6 Address</h3>
+                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">IPv6 Address</h3>
                       <p className="text-sm text-gray-500 dark:text-gray-400">Internet Protocol version 6</p>
                     </div>
                   </div>
@@ -283,12 +490,13 @@ export default function IPTracker() {
                     size="sm"
                     onClick={() => handleCopy(ipInfo?.ipv6 || '', 'IPv6 address')}
                     disabled={!ipInfo?.ipv6}
+                    className="hover:bg-purple-50 hover:border-purple-300 dark:hover:bg-purple-900/20"
                   >
                     <Copy className="h-4 w-4 mr-2" />
                     Copy
                   </Button>
                 </div>
-                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-4 border border-purple-100 dark:border-purple-800">
                   <div className="font-mono text-lg font-bold text-gray-900 dark:text-white break-all">
                     {ipInfo?.ipv6 || 'Not available'}
                   </div>
@@ -301,14 +509,14 @@ export default function IPTracker() {
           {/* Location Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Location Card */}
-            <Card className="lg:col-span-2 overflow-hidden">
+            <Card className="lg:col-span-2 overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-green-100 dark:bg-green-900/50 rounded-lg flex items-center justify-center">
-                    <MapPin className="h-5 w-5 text-green-600 dark:text-green-400" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <MapPin className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Geographic Location</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Geographic Location</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Based on your IP address</p>
                   </div>
                 </div>
@@ -350,14 +558,14 @@ export default function IPTracker() {
             </Card>
 
             {/* ISP Information Card */}
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900/50 rounded-lg flex items-center justify-center">
-                    <Building className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <Building className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">ISP Information</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">ISP Information</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Internet Service Provider</p>
                   </div>
                 </div>
@@ -386,14 +594,14 @@ export default function IPTracker() {
           {/* Security Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* Security Status Card */}
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-red-100 dark:bg-red-900/50 rounded-lg flex items-center justify-center">
-                    <Shield className="h-5 w-5 text-red-600 dark:text-red-400" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <Shield className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Security Status</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Security Status</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">IP reputation and security checks</p>
                   </div>
                 </div>
@@ -424,14 +632,14 @@ export default function IPTracker() {
             </Card>
 
             {/* Additional Information Card */}
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg flex items-center justify-center">
-                    <Info className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <Info className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Additional Information</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">Additional Information</h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Extra details about your connection</p>
                   </div>
                 </div>
@@ -459,32 +667,70 @@ export default function IPTracker() {
 
           {/* Action Buttons */}
           <div className="flex items-center justify-center space-x-4 mb-8">
-            <Button onClick={handleRefresh} disabled={isRefreshing}>
+            <Button onClick={handleRefresh} disabled={isRefreshing} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg">
               <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
               Refresh Data
             </Button>
-            <Button variant="outline" onClick={handleExport}>
+            <Button variant="outline" onClick={handleExport} className="hover:bg-blue-50 hover:border-blue-300 dark:hover:bg-blue-900/20">
               <Download className="h-4 w-4 mr-2" />
               Export JSON
             </Button>
           </div>
 
           {/* Recent Lookups Section */}
-          <div className="mb-8">
+          <div id="history" className="mb-8">
             <RecentLookups />
           </div>
         </div>
 
-        {/* Right Ad Space */}
-        <div className="hidden xl:block w-32 p-4">
-          <div className="bg-gray-100 dark:bg-gray-700 rounded-lg h-96 flex items-center justify-center sticky top-4">
-            <div className="text-center text-sm text-gray-500 dark:text-gray-400">
-              <p>Ad Space</p>
-              <p className="text-xs">160x600</p>
+        <AdPlaceholder side="right" />
+      </main>
+
+      {/* Footer - Alinta Style */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Globe className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Your IP</h3>
+                  <p className="text-gray-400 text-sm">Advanced IP Address Tracking</p>
+                </div>
+              </div>
+              <p className="text-gray-400 mb-4">
+                Get comprehensive IP address information including location, ISP details, and security analysis with our professional tracking service.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Services</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">IP Tracking</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Location Services</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Security Analysis</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Network Information</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">API Reference</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
+              </ul>
             </div>
           </div>
+          
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2025 Your IP. All rights reserved. | Privacy Policy | Terms of Service</p>
+          </div>
         </div>
-      </main>
+      </footer>
     </div>
   );
 }
