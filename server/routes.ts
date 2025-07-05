@@ -18,11 +18,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get IP information from multiple sources
       const ipInfo = await getIPInformation(cleanIp, req.headers['user-agent'] || '');
       
+      // Save the lookup to the database
+      try {
+        await storage.saveIpLookup({
+          ip: ipInfo.ip,
+          ipv6: ipInfo.ipv6,
+          city: ipInfo.city,
+          region: ipInfo.region,
+          country: ipInfo.country,
+          countryCode: ipInfo.countryCode,
+          postalCode: ipInfo.postalCode,
+          latitude: ipInfo.latitude,
+          longitude: ipInfo.longitude,
+          timezone: ipInfo.timezone,
+          isp: ipInfo.isp,
+          organization: ipInfo.organization,
+          asn: ipInfo.asn,
+          connectionType: ipInfo.connectionType,
+          proxy: ipInfo.proxy,
+          vpn: ipInfo.vpn,
+          tor: ipInfo.tor,
+          threatLevel: ipInfo.threatLevel,
+          currency: ipInfo.currency,
+          callingCode: ipInfo.callingCode,
+          language: ipInfo.language,
+          userAgent: ipInfo.userAgent,
+        });
+      } catch (dbError) {
+        console.warn('Failed to save IP lookup to database:', dbError);
+        // Continue with response even if database save fails
+      }
+      
       res.json(ipInfo);
     } catch (error) {
       console.error('Error fetching IP information:', error);
       res.status(500).json({ 
         error: 'Failed to fetch IP information',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Get recent IP lookups
+  app.get("/api/recent-lookups", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 10;
+      const recentLookups = await storage.getRecentIpLookups(limit);
+      res.json(recentLookups);
+    } catch (error) {
+      console.error('Error fetching recent lookups:', error);
+      res.status(500).json({ 
+        error: 'Failed to fetch recent lookups',
         message: error instanceof Error ? error.message : 'Unknown error'
       });
     }

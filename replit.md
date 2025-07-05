@@ -104,3 +104,5 @@ Changelog:
 - July 05, 2025. Updated branding to "Your IP" with magnifying glass on globe icon
 - July 05, 2025. Added Google Ads placeholder spaces on left and right sides (160x600 format)
 - July 05, 2025. Added dark mode support for better accessibility
+- July 05, 2025. Added PostgreSQL database integration with IP lookup history tracking
+- July 05, 2025. Added Recent Lookups component to display database-stored IP lookup history

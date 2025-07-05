@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { type IPInfo } from "@shared/schema";
 import { useState } from "react";
+import RecentLookups from "@/components/recent-lookups";
 
 export default function IPTracker() {
   const { toast } = useToast();
@@ -466,6 +467,11 @@ export default function IPTracker() {
               <Download className="h-4 w-4 mr-2" />
               Export JSON
             </Button>
+          </div>
+
+          {/* Recent Lookups Section */}
+          <div className="mb-8">
+            <RecentLookups />
           </div>
         </div>
 
