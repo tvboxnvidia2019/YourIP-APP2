@@ -111,3 +111,4 @@ Changelog:
 - July 05, 2025. Redesigned UI to match Alinta Energy style with professional navigation and modern cards
 - July 05, 2025. Added interactive location map component with Google Maps, Apple Maps, and OpenStreetMap integration
 - July 05, 2025. Comprehensive SEO optimization with meta tags, structured data, sitemap, robots.txt, and content sections
+- July 05, 2025. Fixed Docker build process to properly handle dev dependencies during build stage while maintaining minimal production image
