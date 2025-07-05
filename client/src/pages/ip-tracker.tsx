@@ -30,6 +30,7 @@ import {
 import { type IPInfo } from "@shared/schema";
 import { useState } from "react";
 import RecentLookups from "@/components/recent-lookups";
+import LocationMap from "@/components/location-map";
 
 export default function IPTracker() {
   const { toast } = useToast();
@@ -507,9 +508,9 @@ export default function IPTracker() {
           </div>
 
           {/* Location Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            {/* Location Card */}
-            <Card className="lg:col-span-2 overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* Location Details Card */}
+            <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -520,43 +521,51 @@ export default function IPTracker() {
                     <p className="text-sm text-gray-500 dark:text-gray-400">Based on your IP address</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">City</span>
-                      <span className="text-sm font-semibold text-gray-900 dark:text-white">{ipInfo?.city || 'Not available'}</span>
-                    </div>
-                    <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Region</span>
-                      <span className="text-sm font-semibold text-gray-900 dark:text-white">{ipInfo?.region || 'Not available'}</span>
-                    </div>
-                    <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Country</span>
-                      <span className="text-sm font-semibold text-gray-900 dark:text-white">{ipInfo?.country || 'Not available'}</span>
-                    </div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">City</span>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{ipInfo?.city || 'Not available'}</span>
                   </div>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Postal Code</span>
-                      <span className="text-sm font-semibold text-gray-900 dark:text-white">{ipInfo?.postalCode || 'Not available'}</span>
-                    </div>
-                    <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Coordinates</span>
-                      <span className="text-sm font-mono text-gray-900 dark:text-white">
-                        {ipInfo?.latitude && ipInfo?.longitude 
-                          ? `${ipInfo.latitude}, ${ipInfo.longitude}` 
-                          : 'Not available'}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Timezone</span>
-                      <span className="text-sm font-semibold text-gray-900 dark:text-white">{ipInfo?.timezone || 'Not available'}</span>
-                    </div>
+                  <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Region</span>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{ipInfo?.region || 'Not available'}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Country</span>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{ipInfo?.country || 'Not available'}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Postal Code</span>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{ipInfo?.postalCode || 'Not available'}</span>
+                  </div>
+                  <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Coordinates</span>
+                    <span className="text-sm font-mono text-gray-900 dark:text-white">
+                      {ipInfo?.latitude && ipInfo?.longitude 
+                        ? `${ipInfo.latitude}, ${ipInfo.longitude}` 
+                        : 'Not available'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700">
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Timezone</span>
+                    <span className="text-sm font-semibold text-gray-900 dark:text-white">{ipInfo?.timezone || 'Not available'}</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
+            {/* Interactive Map Card */}
+            <LocationMap 
+              latitude={ipInfo?.latitude}
+              longitude={ipInfo?.longitude}
+              city={ipInfo?.city}
+              region={ipInfo?.region}
+              country={ipInfo?.country}
+            />
+          </div>
+
+          {/* ISP and Additional Info Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* ISP Information Card */}
             <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-6">

@@ -107,3 +107,6 @@ Changelog:
 - July 05, 2025. Added PostgreSQL database integration with IP lookup history tracking
 - July 05, 2025. Added Recent Lookups component to display database-stored IP lookup history
 - July 05, 2025. Added Docker configuration with Dockerfile, docker-compose.yml, and deployment documentation
+- July 05, 2025. Enhanced ad placeholders with colorful gradients, animations, and clear visibility
+- July 05, 2025. Redesigned UI to match Alinta Energy style with professional navigation and modern cards
+- July 05, 2025. Added interactive location map component with Google Maps, Apple Maps, and OpenStreetMap integration
