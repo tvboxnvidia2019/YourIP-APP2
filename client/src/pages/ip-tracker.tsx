@@ -407,15 +407,28 @@ export default function IPTracker() {
         </div>
       </nav>
 
+      {/* SEO Breadcrumb Navigation */}
+      <nav aria-label="Breadcrumb" className="bg-gray-100 dark:bg-gray-800 py-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ol className="flex items-center space-x-2 text-sm">
+            <li>
+              <a href="/" className="text-blue-600 dark:text-blue-400 hover:underline">Home</a>
+            </li>
+            <li className="text-gray-500">/</li>
+            <li className="text-gray-700 dark:text-gray-300" aria-current="page">IP Address Tracker</li>
+          </ol>
+        </div>
+      </nav>
+
       {/* Hero Section - Alinta Style */}
-      <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white py-12">
+      <header className="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Discover Your IP Information
+            Free IP Address Tracker & Location Finder
           </h1>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Get comprehensive details about your IP address, location, and network connection with our advanced tracking technology.
-          </p>
+          <h2 className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            Discover your IPv4 & IPv6 address, precise geolocation, ISP details, and comprehensive network security analysis instantly.
+          </h2>
           <div className="flex items-center justify-center space-x-4">
             <div className="bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3">
               <div className="flex items-center space-x-3">
@@ -424,8 +437,13 @@ export default function IPTracker() {
               </div>
             </div>
           </div>
+          
+          {/* SEO Keywords Section */}
+          <div className="mt-8 text-sm text-blue-200">
+            <p>What is my IP address? | IP geolocation | Network analysis | ISP information | IPv6 tracker</p>
+          </div>
         </div>
-      </div>
+      </header>
 
       <main className="flex">
         <AdPlaceholder side="left" />
@@ -687,9 +705,107 @@ export default function IPTracker() {
           </div>
 
           {/* Recent Lookups Section */}
-          <div id="history" className="mb-8">
+          <section id="history" className="mb-8">
             <RecentLookups />
-          </div>
+          </section>
+
+          {/* SEO Content Section */}
+          <section className="mb-8">
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-8">
+                <div className="max-w-4xl mx-auto">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                    About IP Address Tracking & Geolocation
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                        What is an IP Address?
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400 mb-4">
+                        An IP (Internet Protocol) address is a unique numerical identifier assigned to every device connected to the internet. 
+                        It serves as your device's digital address, enabling communication between different systems across networks.
+                      </p>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                        IPv4 vs IPv6
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        IPv4 addresses use a 32-bit format (e.g., 192.168.1.1) while IPv6 uses 128-bit format for expanded address space. 
+                        Our tracker detects both protocol versions automatically.
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                        How IP Geolocation Works
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400 mb-4">
+                        IP geolocation uses databases that map IP address ranges to geographic locations. While not 100% precise, 
+                        it provides accurate city-level location data for most addresses.
+                      </p>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                        Privacy & Security
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        Your IP address can reveal your approximate location and ISP. Our tool helps you understand what 
+                        information is publicly visible about your connection.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+
+          {/* FAQ Section with Schema */}
+          <section className="mb-8">
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-8">
+                <div className="max-w-4xl mx-auto">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                    Frequently Asked Questions
+                  </h2>
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                        What is my IP address used for?
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        Your IP address identifies your device on the internet, enables website access, determines your general location 
+                        for content delivery, and helps websites provide region-specific content and services.
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                        Is IP address tracking legal?
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        Yes, IP address tracking is legal as IP addresses are publicly visible information. However, linking IP addresses 
+                        to personal information requires proper consent and compliance with privacy regulations.
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                        How accurate is IP geolocation?
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        IP geolocation typically provides city-level accuracy of 75-85%. Rural areas may show broader regions, 
+                        while urban areas often provide more precise location data.
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                        Can I hide my IP address?
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400">
+                        Yes, you can use VPN services, proxy servers, or Tor browser to mask your real IP address. 
+                        Our tracker can detect some proxy and VPN usage in the security analysis section.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
         </div>
 
         <AdPlaceholder side="right" />
