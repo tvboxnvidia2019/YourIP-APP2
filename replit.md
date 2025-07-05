@@ -106,3 +106,4 @@ Changelog:
 - July 05, 2025. Added dark mode support for better accessibility
 - July 05, 2025. Added PostgreSQL database integration with IP lookup history tracking
 - July 05, 2025. Added Recent Lookups component to display database-stored IP lookup history
+- July 05, 2025. Added Docker configuration with Dockerfile, docker-compose.yml, and deployment documentation
