@@ -17,7 +17,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Build the application (requires dev dependencies)
-RUN node build.js
+RUN node build-docker.js
 
 # Install only production dependencies for runtime
 FROM base AS prod-deps
@@ -38,6 +38,9 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
 COPY --from=prod-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
+
+# Ensure dist/public directory exists
+RUN mkdir -p /app/dist/public
 
 USER nextjs
 

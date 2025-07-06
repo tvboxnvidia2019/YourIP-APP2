@@ -3,7 +3,7 @@ import { execSync } from 'child_process';
 
 // Build the frontend first
 console.log('Building frontend...');
-execSync('npx vite build --outDir dist/public', { stdio: 'inherit' });
+execSync('npx vite build', { stdio: 'inherit' });
 
 // Build the backend with proper externals
 console.log('Building backend...');

@@ -19,7 +19,8 @@ function log(message: string, source = "express") {
 }
 
 function serveStatic(app: express.Express) {
-  const distPath = path.resolve(import.meta.dirname, "public");
+  // In production, look for built files in the dist directory
+  const distPath = path.resolve(process.cwd(), "dist", "public");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
