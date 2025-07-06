@@ -81,6 +81,21 @@ The application uses PostgreSQL. When using Docker Compose, the database is auto
 2. Set the `DATABASE_URL` environment variable
 3. Run the application - it will automatically create the required tables
 
+### Database Migrations (Drizzle ORM)
+
+If you change the database schema (in `shared/schema.ts`), generate and apply migrations using Drizzle ORM:
+
+```bash
+# Generate a new migration based on schema changes
+npx drizzle-kit generate:pg
+
+# Push (apply) all migrations to the database
+npm run db:push
+```
+
+- `npx drizzle-kit generate:pg` creates a new migration file in the `migrations` folder.
+- `npm run db:push` applies all migrations to your database (see `package.json` for the script).
+
 ### Production Deployment
 
 For production deployment:
