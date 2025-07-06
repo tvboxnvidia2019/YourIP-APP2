@@ -49,6 +49,17 @@ docker run -p 5000:5000 \
   your-ip-tracker
 ```
 
+### Production Build Process
+
+The application uses a custom build process optimized for Docker production deployment:
+
+1. **Frontend**: Creates a minimal production HTML file with essential IP tracking functionality
+2. **Backend**: Builds a standalone server bundle using esbuild, excluding development dependencies
+3. **Static Files**: Serves the frontend from `/dist/public` directory
+4. **Database**: Automatically connects to PostgreSQL and creates required tables
+
+The production build is optimized for fast deployment and minimal container size.
+
 ### Environment Variables
 
 Create a `.env` file based on `.env.example`:
@@ -79,6 +90,25 @@ For production deployment:
 3. Set up proper networking and reverse proxy (nginx/traefik)
 4. Configure SSL/TLS certificates
 5. Set up backup strategies for the PostgreSQL volume
+
+### Troubleshooting
+
+**Docker Build Issues:**
+- If you encounter "Cannot find package 'vite'" errors, the build process has been optimized to avoid this issue
+- The production build uses a custom script (`build-docker.js`) that creates optimized bundles without development dependencies
+
+**Database Connection:**
+- Ensure the PostgreSQL container is running before starting the app container
+- Check the `DATABASE_URL` environment variable format: `postgresql://user:password@host:5432/database`
+- The application will automatically create database tables on first run
+
+**Port Conflicts:**
+- The application runs on port 5000 by default
+- If port 5000 is already in use, modify the port mapping in `docker-compose.yml`
+
+**Build Performance:**
+- The production build is optimized for Docker and avoids slow frontend builds
+- Build time is typically under 2 minutes for most systems
 
 ### Development
 
