@@ -4,6 +4,8 @@ import { drizzle as neonDrizzle } from 'drizzle-orm/neon-serverless';
 import { drizzle as pgDrizzle } from 'drizzle-orm/node-postgres';
 import ws from "ws";
 import * as schema from "@shared/schema";
+import { migrate as neonMigrate } from 'drizzle-orm/neon-serverless/migrator';
+import { migrate as pgMigrate } from 'drizzle-orm/node-postgres/migrator';
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
@@ -27,5 +29,19 @@ if (isNeonDatabase) {
   pool = new PgPool({ connectionString: process.env.DATABASE_URL });
   db = pgDrizzle({ client: pool as PgPool, schema });
 }
+
+(async () => {
+  try {
+    if (isNeonDatabase) {
+      await neonMigrate(db as ReturnType<typeof neonDrizzle>, { migrationsFolder: './migrations' });
+    } else {
+      await pgMigrate(db as ReturnType<typeof pgDrizzle>, { migrationsFolder: './migrations' });
+    }
+    console.log('Database migrated successfully.');
+  } catch (err) {
+    console.error('Database migration failed:', err);
+    process.exit(1);
+  }
+})();
 
 export { pool, db };
