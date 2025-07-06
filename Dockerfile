@@ -17,7 +17,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Build the application (requires dev dependencies)
-RUN npm run build
+RUN node build.js
 
 # Install only production dependencies for runtime
 FROM base AS prod-deps
@@ -47,4 +47,4 @@ ENV PORT=5000
 ENV HOSTNAME="0.0.0.0"
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["node", "dist/index.js"]
