@@ -66,11 +66,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const recentLookups = await storage.getRecentIpLookups(limit);
       res.json(recentLookups);
     } catch (error) {
-      console.error('Error fetching recent lookups:', error);
-      res.status(500).json({ 
-        error: 'Failed to fetch recent lookups',
-        message: error instanceof Error ? error.message : 'Unknown error'
-      });
+      console.warn('Error fetching recent lookups:', error);
+      // Return empty array instead of error to prevent UI breaking
+      res.json([]);
     }
   });
 
