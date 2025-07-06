@@ -23,17 +23,29 @@ A modern web application that displays comprehensive IP address information incl
 
 1. Clone or download this repository
 2. Navigate to the project directory
-3. Run the application:
+3. (Optional) Create a `.env` file for custom configuration:
+   ```bash
+   cp .env.example .env
+   # Edit .env file with your preferred settings
+   ```
+4. Run the application:
 
 ```bash
 docker-compose up -d
 ```
 
 This will:
-- Build the application container
-- Start a PostgreSQL database
-- Set up the database schema automatically
+- Build the application container with optimized production build
+- Start a PostgreSQL 15 database container with persistent storage
+- Set up the database schema automatically using Drizzle ORM
+- Configure health checks for reliable startup
 - Run the application on http://localhost:5000
+
+**First-time setup includes:**
+- Automatic database initialization
+- Schema migration using `npm run db:push`
+- Network isolation between containers
+- Persistent data storage in Docker volumes
 
 ### Manual Docker Build
 
@@ -68,10 +80,37 @@ Create a `.env` file based on `.env.example`:
 cp .env.example .env
 ```
 
-Required environment variables:
-- `DATABASE_URL`: PostgreSQL connection string
-- `NODE_ENV`: Set to "production" for production deployment
+Available environment variables:
+- `POSTGRES_PASSWORD`: Database password (default: securepassword123)
+- `DB_PORT`: Database port mapping (default: 5432)
+- `NODE_ENV`: Environment mode (automatically set to production)
 - `PORT`: Application port (default: 5000)
+- `HOSTNAME`: Application hostname (default: 0.0.0.0)
+
+### Docker Management Commands
+
+```bash
+# Start the services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the services
+docker-compose down
+
+# Stop and remove all data (including database)
+docker-compose down -v
+
+# Rebuild containers after code changes
+docker-compose up -d --build
+
+# Access the database directly
+docker-compose exec db psql -U postgres -d iptracker
+
+# View service status
+docker-compose ps
+```
 
 ### Database Setup
 

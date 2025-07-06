@@ -1,6 +1,9 @@
 # Use Node.js 20 Alpine for smaller image size
 FROM node:20-alpine AS base
 
+# Install PostgreSQL client for health checks
+RUN apk add --no-cache postgresql-client
+
 # Install dependencies only when needed
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
@@ -38,6 +41,12 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
 COPY --from=prod-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder --chown=nextjs:nodejs /app/shared ./shared
+
+# Copy and setup entrypoint script
+COPY --from=builder /app/docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
 
 # Ensure dist/public directory exists
 RUN mkdir -p /app/dist/public
@@ -48,6 +57,9 @@ EXPOSE 5000
 
 ENV PORT=5000
 ENV HOSTNAME="0.0.0.0"
+
+# Set the entrypoint
+ENTRYPOINT ["./docker-entrypoint.sh"]
 
 # Start the application
 CMD ["node", "dist/index.js"]
