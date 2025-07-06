@@ -136,6 +136,15 @@ For production deployment:
 - If you encounter "Cannot find package 'vite'" errors, the build process has been optimized to avoid this issue
 - The production build uses a custom script (`build-docker.js`) that creates optimized bundles without development dependencies
 
+**Entrypoint Script Issues:**
+- If you see `exec ./docker-entrypoint.sh: no such file or directory`, try:
+  ```bash
+  # Rebuild with no cache
+  docker-compose down
+  docker-compose up -d --build --no-cache
+  ```
+- The container includes automatic database setup and health checks
+
 **Database Connection:**
 - Ensure the PostgreSQL container is running before starting the app container
 - Check the `DATABASE_URL` environment variable format: `postgresql://user:password@host:5432/database`

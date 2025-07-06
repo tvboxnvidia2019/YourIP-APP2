@@ -44,13 +44,14 @@ COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./drizzle.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/shared ./shared
 
-# Copy and setup entrypoint script
-COPY --from=builder /app/docker-entrypoint.sh ./docker-entrypoint.sh
-RUN chmod +x ./docker-entrypoint.sh
-
 # Ensure dist/public directory exists
 RUN mkdir -p /app/dist/public
 
+# Copy and setup entrypoint script (before switching to nextjs user)
+COPY docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh && chown nextjs:nodejs ./docker-entrypoint.sh
+
+# Switch to nextjs user
 USER nextjs
 
 EXPOSE 5000
@@ -58,8 +59,5 @@ EXPOSE 5000
 ENV PORT=5000
 ENV HOSTNAME="0.0.0.0"
 
-# Set the entrypoint
-ENTRYPOINT ["./docker-entrypoint.sh"]
-
-# Start the application
-CMD ["node", "dist/index.js"]
+# Use a simple startup command instead of entrypoint
+CMD ["sh", "-c", "until pg_isready -h db -p 5432 -U postgres; do echo 'Waiting for PostgreSQL...'; sleep 2; done && echo 'PostgreSQL is ready!' && npm run db:push && node dist/index.js"]
