@@ -29,16 +29,95 @@ const db = drizzle(sqlite, { schema });
 // Run migrations only if migrations directory has files
 (async () => {
   try {
-    if (existsSync('./migrations') && require('fs').readdirSync('./migrations').length > 0) {
+    const fs = await import('fs');
+    if (existsSync('./migrations') && fs.readdirSync('./migrations').length > 0) {
       await migrate(db, { migrationsFolder: './migrations' });
       console.log('Database migrated successfully.');
     } else {
-      console.log('No migrations found, skipping migration step.');
+      console.log('No migrations found, creating tables manually...');
+      // Create tables manually if migrations fail
+      sqlite.exec(`
+        CREATE TABLE IF NOT EXISTS ip_lookups (
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          ip TEXT NOT NULL,
+          ipv6 TEXT,
+          city TEXT,
+          region TEXT,
+          country TEXT,
+          country_code TEXT,
+          postal_code TEXT,
+          latitude REAL,
+          longitude REAL,
+          timezone TEXT,
+          isp TEXT,
+          organization TEXT,
+          asn TEXT,
+          connection_type TEXT,
+          proxy INTEGER,
+          vpn INTEGER,
+          tor INTEGER,
+          threat_level TEXT,
+          currency TEXT,
+          calling_code TEXT,
+          language TEXT,
+          user_agent TEXT,
+          created_at INTEGER NOT NULL
+        );
+        
+        CREATE TABLE IF NOT EXISTS users (
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          username TEXT NOT NULL,
+          password TEXT NOT NULL
+        );
+        
+        CREATE UNIQUE INDEX IF NOT EXISTS users_username_unique ON users (username);
+      `);
+      console.log('Tables created manually.');
     }
   } catch (err) {
     console.error('Database migration failed:', err);
-    // Don't exit process, just log the error
-    console.log('Continuing without migrations...');
+    // Create tables manually as fallback
+    try {
+      sqlite.exec(`
+        CREATE TABLE IF NOT EXISTS ip_lookups (
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          ip TEXT NOT NULL,
+          ipv6 TEXT,
+          city TEXT,
+          region TEXT,
+          country TEXT,
+          country_code TEXT,
+          postal_code TEXT,
+          latitude REAL,
+          longitude REAL,
+          timezone TEXT,
+          isp TEXT,
+          organization TEXT,
+          asn TEXT,
+          connection_type TEXT,
+          proxy INTEGER,
+          vpn INTEGER,
+          tor INTEGER,
+          threat_level TEXT,
+          currency TEXT,
+          calling_code TEXT,
+          language TEXT,
+          user_agent TEXT,
+          created_at INTEGER NOT NULL
+        );
+        
+        CREATE TABLE IF NOT EXISTS users (
+          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+          username TEXT NOT NULL,
+          password TEXT NOT NULL
+        );
+        
+        CREATE UNIQUE INDEX IF NOT EXISTS users_username_unique ON users (username);
+      `);
+      console.log('Tables created manually after migration failure.');
+    } catch (createErr) {
+      console.error('Failed to create tables manually:', createErr);
+    }
   }
 })();
 
