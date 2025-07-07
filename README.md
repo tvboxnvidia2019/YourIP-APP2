@@ -11,104 +11,49 @@ A modern web application that displays comprehensive IP address information incl
 - 📊 IP lookup history tracking
 - 🌙 Dark mode support
 - 📱 Responsive design
-- 💾 PostgreSQL database storage
+- 💾 SQLite database storage
 
-## Docker Deployment
+## Quick Start
 
-### Prerequisites
-
-- Docker and Docker Compose installed on your system
-
-### Quick Start with Docker Compose
+### Development
 
 1. Clone or download this repository
-2. Navigate to the project directory
-3. (Optional) Create a `.env` file for custom configuration:
+2. Install dependencies:
    ```bash
-   cp .env.example .env
-   # Edit .env file with your preferred settings
+   npm install
    ```
-4. Run the application:
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open your browser to `http://localhost:5000`
 
-```bash
-docker-compose up -d
-```
+The application will automatically:
+- Create a SQLite database file (`data/iptracker.db`)
+- Set up the required database tables
+- Start serving on port 5000
 
-This will:
-- Build the application container with optimized production build
-- Start a PostgreSQL 15 database container with persistent storage
-- Set up the database schema automatically using Drizzle ORM
-- Configure health checks for reliable startup
-- Run the application on http://localhost:5000
+### Production Deployment on Replit
 
-**First-time setup includes:**
-- Automatic database initialization
-- Schema migration using `npm run db:push`
-- Network isolation between containers
-- Persistent data storage in Docker volumes
+This application is optimized for deployment on Replit:
 
-### Manual Docker Build
+1. Import this repository into a new Repl
+2. The application will automatically install dependencies and start
+3. Access your deployed application via the Replit-provided URL
 
-If you prefer to build and run manually:
-
-```bash
-# Build the image
-docker build -t your-ip-tracker .
-
-# Run with external database
-docker run -p 5000:5000 \
-  -e DATABASE_URL="postgresql://user:password@host:5432/database" \
-  your-ip-tracker
-```
-
-### Production Build Process
-
-The application uses a custom build process optimized for Docker production deployment:
-
-1. **Frontend**: Creates a minimal production HTML file with essential IP tracking functionality
-2. **Backend**: Builds a standalone server bundle using esbuild, excluding development dependencies
-3. **Static Files**: Serves the frontend from `/dist/public` directory
-4. **Database**: Automatically connects to PostgreSQL and creates required tables
-
-The production build is optimized for fast deployment and minimal container size.
+**Replit Deployment Features:**
+- Automatic dependency installation
+- Built-in SQLite database support
+- Zero-configuration deployment
+- Persistent storage for database files
 
 ### Environment Variables
 
-Create a `.env` file based on `.env.example`:
+No environment variables are required for basic operation. The application uses SQLite with local file storage.
 
-```bash
-cp .env.example .env
-```
-
-Available environment variables:
-- `POSTGRES_PASSWORD`: Database password (default: securepassword123)
-- `DB_PORT`: Database port mapping (default: 5432)
-- `NODE_ENV`: Environment mode (automatically set to production)
+Optional environment variables:
+- `NODE_ENV`: Set to `production` for production mode (default: `development`)
 - `PORT`: Application port (default: 5000)
-- `HOSTNAME`: Application hostname (default: 0.0.0.0)
-
-### Docker Management Commands
-
-```bash
-# Start the services
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop the services
-docker-compose down
-
-# Stop and remove all data (including database)
-docker-compose down -v
-
-# Rebuild containers after code changes
-docker-compose up -d --build
-
-# Access the database directly
-docker-compose exec db psql -U # View service status
-docker-compose ps
-```
 
 ### Database Setup
 
@@ -127,66 +72,53 @@ npm run db:push
 ```
 
 - `npx drizzle-kit generate` creates a new migration file in the `migrations` folder.
-- `npm run db:push` applies all migrations to your SQLite database (see `package.json` for the script).
+- `npm run db:push` applies all migrations to your SQLite database.
 
-### Production Deployment
+### Project Structure
 
-For production deployment:
-
-1. Update the `docker-compose.yml` with secure passwords
-2. Consider using Docker secrets for sensitive data
-3. Set up proper networking and reverse proxy (nginx/traefik)
-4. Configure SSL/TLS certificates
-5. Set up backup strategies for the PostgreSQL volume
-
-### Troubleshooting
-
-**Docker Build Issues:**
-- If you encounter "Cannot find package 'vite'" errors, the build process has been optimized to avoid this issue
-- The production build uses a custom script (`build-docker.js`) that creates optimized bundles without development dependencies
-
-**Entrypoint Script Issues:**
-- If you see `exec ./docker-entrypoint.sh: no such file or directory`, try:
-  ```bash
-  # Rebuild with no cache
-  docker-compose down
-  docker-compose up -d --build --no-cache
-  ```
-- The container includes automatic database setup and health checks
-
-**Database Connection:**
-- Ensure the PostgreSQL container is running before starting the app container
-- Check the `DATABASE_URL` environment variable format: `postgresql://user:password@host:5432/database`
-- The application will automatically create database tables on first run
-
-**Port Conflicts:**
-- The application runs on port 5000 by default
-- If port 5000 is already in use, modify the port mapping in `docker-compose.yml`
-
-**Build Performance:**
-- The production build is optimized for Docker and avoids slow frontend builds
-- Build time is typically under 2 minutes for most systems
-
-### Development
-
-To run in development mode:
-
-```bash
-npm install
-npm run dev
+```
+├── client/                 # React frontend
+│   ├── src/
+│   │   ├── components/     # UI components
+│   │   ├── pages/          # Application pages
+│   │   └── lib/            # Utilities and query client
+├── server/                 # Express backend
+│   ├── db.ts              # Database configuration
+│   ├── routes.ts          # API routes
+│   └── index.ts           # Server entry point
+├── shared/                 # Shared types and schema
+│   └── schema.ts          # Database schema
+├── migrations/             # Database migrations
+└── data/                   # SQLite database files
 ```
 
-## Technology Stack
-
-- **Frontend**: React 18, TypeScript, Tailwind CSS, shadcn/ui
-- **Backend**: Node.js, Express.js, TypeScript
-- **Database**: PostgreSQL with Drizzle ORM
-- **Build**: Vite (frontend), esbuild (backend)
-
-## API Endpoints
+### API Endpoints
 
 - `GET /api/ip-info` - Get current IP information
 - `GET /api/recent-lookups` - Get recent IP lookup history
+
+### Troubleshooting
+
+**Database Issues:**
+- If you see "no such table" errors, the database migration failed
+- Delete the `data/` folder and restart the application to recreate tables
+- Check that the `migrations/` folder contains the required migration files
+
+**Port Issues:**
+- The application runs on port 5000 by default
+- Ensure no other applications are using port 5000
+- On Replit, the port is automatically handled
+
+**Build Issues:**
+- Run `npm install` to ensure all dependencies are installed
+- Clear the `node_modules` folder and reinstall if needed
+
+### Technology Stack
+
+- **Frontend**: React 18, TypeScript, Tailwind CSS, shadcn/ui
+- **Backend**: Node.js, Express.js, TypeScript
+- **Database**: SQLite with Drizzle ORM
+- **Build**: Vite (frontend), esbuild (backend)
 
 ## License
 
