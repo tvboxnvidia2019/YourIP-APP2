@@ -1,8 +1,6 @@
+
 # Use Node.js 20 Alpine for smaller image size
 FROM node:20-alpine AS base
-
-# Install PostgreSQL client for health checks
-RUN apk add --no-cache postgresql-client
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -19,7 +17,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build the application (requires dev dependencies)
+# Build the application
 RUN node build-docker.js
 
 # Install only production dependencies for runtime
@@ -37,6 +35,9 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Create data directory for SQLite database
+RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
+
 # Copy the built application
 COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
 COPY --from=prod-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
@@ -47,10 +48,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/shared ./shared
 # Ensure dist/public directory exists
 RUN mkdir -p /app/dist/public
 
-# Copy and setup entrypoint script (before switching to nextjs user)
-COPY docker-entrypoint.sh ./docker-entrypoint.sh
-RUN chmod +x ./docker-entrypoint.sh && chown nextjs:nodejs ./docker-entrypoint.sh
-
 # Switch to nextjs user
 USER nextjs
 
@@ -59,5 +56,8 @@ EXPOSE 5000
 ENV PORT=5000
 ENV HOSTNAME="0.0.0.0"
 
-# Use a simple startup command instead of entrypoint
-CMD ["sh", "-c", "until pg_isready -h db -p 5432 -U postgres; do echo 'Waiting for PostgreSQL...'; sleep 2; done && echo 'PostgreSQL is ready!' && npm run db:push && node dist/index.js"]
+# Volume for SQLite database persistence
+VOLUME ["/app/data"]
+
+# Start the application
+CMD ["node", "dist/index.js"]

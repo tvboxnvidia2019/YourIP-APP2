@@ -106,19 +106,13 @@ docker-compose down -v
 docker-compose up -d --build
 
 # Access the database directly
-docker-compose exec db psql -U postgres -d iptracker
-
-# View service status
+docker-compose exec db psql -U # View service status
 docker-compose ps
 ```
 
 ### Database Setup
 
-The application uses PostgreSQL. When using Docker Compose, the database is automatically configured. For manual setup:
-
-1. Create a PostgreSQL database
-2. Set the `DATABASE_URL` environment variable
-3. Run the application - it will automatically create the required tables
+The application uses SQLite for data storage. The database file is automatically created when the application starts. No additional setup is required.
 
 ### Database Migrations (Drizzle ORM)
 
@@ -126,14 +120,14 @@ If you change the database schema (in `shared/schema.ts`), generate and apply mi
 
 ```bash
 # Generate a new migration based on schema changes
-npx drizzle-kit generate:pg
+npx drizzle-kit generate
 
 # Push (apply) all migrations to the database
 npm run db:push
 ```
 
-- `npx drizzle-kit generate:pg` creates a new migration file in the `migrations` folder.
-- `npm run db:push` applies all migrations to your database (see `package.json` for the script).
+- `npx drizzle-kit generate` creates a new migration file in the `migrations` folder.
+- `npm run db:push` applies all migrations to your SQLite database (see `package.json` for the script).
 
 ### Production Deployment
 

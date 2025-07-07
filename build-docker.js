@@ -58,7 +58,11 @@ const htmlContent = `<!DOCTYPE html>
 
 fs.writeFileSync('dist/public/index.html', htmlContent);
 
-// Build the backend
+// Build the frontend first
+console.log('Building frontend...');
+execSync('npx vite build', { stdio: 'inherit' });
+
+// Build the backend with proper externals for SQLite
 console.log('Building backend...');
 await build({
   entryPoints: ['server/index.prod.ts'],
@@ -69,6 +73,7 @@ await build({
   packages: 'external',
   minify: true,
   sourcemap: false,
+  external: ['better-sqlite3'], // SQLite3 needs to be external for proper loading
 });
 
 console.log('Build complete!');
