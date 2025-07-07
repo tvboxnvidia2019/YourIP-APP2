@@ -109,6 +109,28 @@ npm run db:push
 - Ensure no other applications are using port 5000
 - On Replit, the port is automatically handled
 
+**Docker Deployment:**
+
+You can run this application in a Docker container:
+
+```bash
+# Using the provided script
+chmod +x docker-run.sh
+./docker-run.sh
+
+# Or using Docker Compose
+docker-compose up -d
+
+# Or manually
+docker build -t ip-tracker .
+docker run -d -p 5000:5000 -v $(pwd)/data:/app/data ip-tracker
+```
+
+The container will:
+- Run on port 5000 (mapped to host port 5000)
+- Persist SQLite database files via volume mounting
+- Automatically restart unless stopped
+
 **Build Issues:**
 - Run `npm install` to ensure all dependencies are installed
 - Clear the `node_modules` folder and reinstall if needed
