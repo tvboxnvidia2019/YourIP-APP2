@@ -1,9 +1,9 @@
-import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
+import { pgTable, text, serial, integer, boolean, timestamp, real } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = sqliteTable("users", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
 });
@@ -17,8 +17,8 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 
 // IP lookup history table
-export const ipLookups = sqliteTable("ip_lookups", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const ipLookups = pgTable("ip_lookups", {
+  id: serial("id").primaryKey(),
   ip: text("ip").notNull(),
   ipv6: text("ipv6"),
   city: text("city"),
@@ -33,15 +33,15 @@ export const ipLookups = sqliteTable("ip_lookups", {
   organization: text("organization"),
   asn: text("asn"),
   connectionType: text("connection_type"),
-  proxy: integer("proxy", { mode: "boolean" }),
-  vpn: integer("vpn", { mode: "boolean" }),
-  tor: integer("tor", { mode: "boolean" }),
+  proxy: boolean("proxy"),
+  vpn: boolean("vpn"),
+  tor: boolean("tor"),
   threatLevel: text("threat_level"),
   currency: text("currency"),
   callingCode: text("calling_code"),
   language: text("language"),
   userAgent: text("user_agent"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const insertIpLookupSchema = createInsertSchema(ipLookups).omit({
